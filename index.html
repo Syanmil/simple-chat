@@ -1,33 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <script src='/socket.io/socket.io.js'></script>
-        <script>
-            var socket = io();
-            socket.on('welcome', function(data) {
-                addMessage(data.message);
-                // Respond with a message including this clients' id sent from the server
-                socket.emit('i am client', {
-                    data: 'foo!',
-                    id: data.id
-                });
-            });
-            socket.on('time', function(data) {
-                addMessage(data.time);
-            });
-            socket.on('error', console.error.bind(console));
-            socket.on('message', console.log.bind(console));
-            function addMessage(message) {
-                var text = document.createTextNode(message),
-                    el = document.createElement('li'),
-                    messages = document.getElementById('messages');
-
-                el.appendChild(text);
-                messages.appendChild(el);
-            }
-        </script>
-    </head>
-    <body>
-        <ul id='messages'></ul>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <title>My Simple Chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.7/semantic.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.7/semantic.min.js"></script>
+  </head>
+  <body>
+    <div class="ui container">
+      <div class="ui form">
+        <div class="field five wide column">
+          <input type="text" name="newChat" placeholder="Your Chat">
+          <button class="ui button primary" name="button" onclick="send()">Chat</button>
+        </div>
+      </div>
+      <div id="chat-list"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script type="text/javascript">
+      var socket = io();
+      function send(){
+        socket.emit('chating', $('input[name=newChat]').val())
+      }
+      socket.on('chating', function(chat){
+        $('#chat-list').append(`<p>${chat}</p>`)
+        $('input[name=newChat]').val('')
+      })
+    </script>
+  </body>
 </html>
